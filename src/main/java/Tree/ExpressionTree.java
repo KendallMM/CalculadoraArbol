@@ -1,99 +1,205 @@
 package Tree;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Stack;
 
-public class ExpressionTree {
+public class ExpressionTree extends Thread{
+	static int decider;
+	static char checker;
+	static Nodon root = null;
+        
+        String expressionString;
+        ExpressionTree(String expressionString) {
+            this.expressionString = expressionString;
+        }
+	public void run(){
+                if (expressionString == expressionString){
+                }
+                // pass the infix array in to the postfixer which is a
+		// function to create the postfix form of the expression
+                StackImpl a = new StackImpl();
+                String s1 = a.infixToPostfix(expressionString);
+                System.out.println("La expresión infix: " + expressionString);
+                System.out.println("La expresión postfix: "+ s1);
+                String post = new String(s1);
+                System.out.println(s1);
+		// Create tree out of the postfix form
+		Stack<Nodon> stack = new Stack<Nodon>();
+                List<String> calc = Arrays.asList(post.split(""));
+                System.out.println("Lista = " + calc);
+		int e = 0;
+                while (e<calc.size()){
+                    if(calc.get(e).equals("1")||calc.get(e).equals("2")||calc.get(e).equals("3")||calc.get(e).equals("4")||calc.get(e).equals("5")||calc.get(e).equals("6")||calc.get(e).equals("7")||calc.get(e).equals("8")||calc.get(e).equals("9")||calc.get(e).equals("0")){
+                        String nodo = "";
+                        while(calc.get(e).equals("1")||calc.get(e).equals("2")||calc.get(e).equals("3")||calc.get(e).equals("4")||calc.get(e).equals("5")||calc.get(e).equals("6")||calc.get(e).equals("7")||calc.get(e).equals("8")||calc.get(e).equals("9")||calc.get(e).equals("0")){
+                            nodo += calc.get(e);
+                            System.out.println("El nodo es: "+nodo);
+                            e++;
+                        }
+                        Nodon node = new Nodon(nodo);
+                        stack.push(node);
+                    } else if (calc.get(e).equals(" ")){
+                        e++;
+                    } else if (calc.get(e).equals("(")|| calc.get(e).equals(")")){
+                        e++;
+                    }
+                    else if (calc.get(e).equals("+")|| calc.get(e).equals("-")||calc.get(e).equals("*")|| calc.get(e).equals("/")){
+                        Nodon node = new Nodon(calc.get(e));
+                        System.out.println("El nodo es: "+node.data);
+                        node.right = stack.pop();
+                        node.left = stack.pop();
+                        stack.push(node);
+                        e++;
+                    }
+                }
+		root = stack.pop();
+                BTreePrinter.printNode(root);
+                System.out.println("root: "+root.data);
+		System.out.println("rl: "+root.left.data);
+                System.out.println("rr: "+root.right.data);
+                
+		// Solve the Values!
+		Stack<NodeInt> intStack = new Stack<NodeInt>();
+                double x;
+                double y;
+                int i = 0;
+                while (i<calc.size()){
+                    NodeInt nodeInt = new NodeInt(0);
+                    if (calc.get(i).equals("1")||calc.get(i).equals("2")||calc.get(i).equals("3")||calc.get(i).equals("4")||calc.get(i).equals("5")||calc.get(i).equals("6")||calc.get(i).equals("7")||calc.get(i).equals("8")||calc.get(i).equals("9")||calc.get(i).equals("0")){
+                        String nodo = "";
+                        while(calc.get(i).equals("1")||calc.get(i).equals("2")||calc.get(i).equals("3")||calc.get(i).equals("4")||calc.get(i).equals("5")||calc.get(i).equals("6")||calc.get(i).equals("7")||calc.get(i).equals("8")||calc.get(i).equals("9")||calc.get(i).equals("0")){
+                            nodo += calc.get(i);
+                            i++;
+                        }
+                        
+                        nodeInt = new NodeInt(Integer.parseInt(nodo));
+                        intStack.push(nodeInt);
 
-    private static Node<Integer> test1() {
-        Node<Integer> root = new Node<Integer>(2);
-        Node<Integer> n11 = new Node<Integer>(7);
-        Node<Integer> n12 = new Node<Integer>(5);
-        Node<Integer> n21 = new Node<Integer>(2);
-        Node<Integer> n22 = new Node<Integer>(6);
-        Node<Integer> n23 = new Node<Integer>(3);
-        Node<Integer> n24 = new Node<Integer>(6);
-        Node<Integer> n31 = new Node<Integer>(5);
-        Node<Integer> n32 = new Node<Integer>(8);
-        Node<Integer> n33 = new Node<Integer>(4);
-        Node<Integer> n34 = new Node<Integer>(5);
-        Node<Integer> n35 = new Node<Integer>(8);
-        Node<Integer> n36 = new Node<Integer>(4);
-        Node<Integer> n37 = new Node<Integer>(5);
-        Node<Integer> n38 = new Node<Integer>(8);
+                    }else if (calc.get(i).equals("(")||calc.get(i).equals(")")){
+                        i++;
+                    
 
-        root.left = n11;
-        root.right = n12;
+                    }else if (calc.get(i).equals("+")){
+                        x = intStack.pop().data;
+                        y = intStack.pop().data;
+                        nodeInt.data = y + x;
+                        intStack.push(nodeInt);
+                        i++;
+                    }
+                    else if (calc.get(i).equals("-")){
+                        x = intStack.pop().data;
+                        y = intStack.pop().data;
+                        nodeInt.data = y - x;
+                        intStack.push(nodeInt);
+                        i++;
+                    }
+                    else if (calc.get(i).equals("/")){
+                        x = intStack.pop().data;
+                        y = intStack.pop().data;
+                        nodeInt.data = y / x;
+                        intStack.push(nodeInt);
+                        i++;
+                    }
+                    else if (calc.get(i).equals("*")){
+                        x = intStack.pop().data;
+                        y = intStack.pop().data;
+                        
+                        nodeInt.data = y * x;
+                        intStack.push(nodeInt);
+                        i++;
+                    }
+                    else if (calc.get(i).equals(" ")){
+                        i++;
+                    }
+                }
+                System.out.println(intStack.pop().data);
 
-        n11.left = n21;
-        n11.right = n22;
-        n12.left = n23;
-        n12.right = n24;
+            }
 
-        n21.left = n31;
-        n21.right = n32;
-        n22.left = n33;
-        n22.right = n34;
-        n23.left = n35;
-        n23.right = n36;
-        n24.left = n37;
-        n24.right = n38;
 
-        return root;
-    }
+	// function to convert infix to postfix
+	
 
-    private static Node<Integer> test2() {
-        Node<Integer> root = new Node<Integer>(2);
-        Node<Integer> n11 = new Node<Integer>(7);
-        Node<Integer> n12 = new Node<Integer>(5);
-        Node<Integer> n21 = new Node<Integer>(2);
-        Node<Integer> n22 = new Node<Integer>(6);
-        Node<Integer> n23 = new Node<Integer>(9);
-        Node<Integer> n31 = new Node<Integer>(5);
-        Node<Integer> n32 = new Node<Integer>(8);
-        Node<Integer> n33 = new Node<Integer>(4);
+		
+	public static void checkPrecedence(char a, char b) {
 
-        root.left = n11;
-        root.right = n12;
+		switch (a) {
 
-        n11.left = n21;
-        n11.right = n22;
-
-        n12.right = n23;
-        n22.left = n31;
-        n22.right = n32;
-
-        n23.left = n33;
-
-        return root;
-    }
-
-    public static void main(String[] args) {
-
-        BTreePrinter.printNode(test1());
-        BTreePrinter.printNode(test2());
-
-    }
+		case '/':
+			switch (b) {
+			case '/':decider = 0;break;
+			case '*':decider = 0;break;
+			case '+':decider = 1;break;
+			case '-':decider = 1;break;
+			default:
+			}
+			break;
+		case '*':
+			switch (b) {
+			case '/':decider = 0;break;
+			case '*':decider = 0;break;
+			case '+':decider = 1;break;
+			case '-':decider = 1;break;
+			default:
+			}
+			break;
+		case '+':
+			switch (b) {
+			case '/':decider = 2;break;
+			case '*':decider = 2;break;
+			case '+':decider = 0;break;
+			case '-':decider = 0;break;
+			default:
+			}
+			break;
+		case '-':
+			switch (b) {
+			case '/':decider = 2;break;
+			case '*':decider = 2;break;
+			case '+':decider = 0;break;
+			case '-':decider = 0;break;
+			default:
+			}
+			break;
+		default:
+		}
+        }
+class NodeInt {
+	double data;
+	NodeInt(double data) {
+		this.data = data;
+	}
 }
 
 class Node<T extends Comparable<?>> {
-    Node<T> left, right;
-    T data;
-
-    public Node(T data) {
-        this.data = data;
-    }
+	char data;
+	Node left;
+	Node right;
+	Node(char data) {
+		this.data = data;
+	}
+}
+class Nodon<T extends Comparable<?>> {
+	String data;
+	Nodon left;
+	Nodon right;
+	Nodon(String data) {
+		this.data = data;
+	}
 }
 
 class BTreePrinter {
 
-    public static <T extends Comparable<?>> void printNode(Node<T> root) {
+    public static <T extends Comparable<?>> void printNode(Nodon<T> root) {
         int maxLevel = BTreePrinter.maxLevel(root);
 
         printNodeInternal(Collections.singletonList(root), 1, maxLevel);
     }
 
-    private static <T extends Comparable<?>> void printNodeInternal(List<Node<T>> nodes, int level, int maxLevel) {
+    private static <T extends Comparable<?>> void printNodeInternal(List<Nodon<T>> nodes, int level, int maxLevel) {
         if (nodes.isEmpty() || BTreePrinter.isAllElementsNull(nodes))
             return;
 
@@ -104,8 +210,8 @@ class BTreePrinter {
 
         BTreePrinter.printWhitespaces(firstSpaces);
 
-        List<Node<T>> newNodes = new ArrayList<Node<T>>();
-        for (Node<T> node : nodes) {
+        List<Nodon<T>> newNodes = new ArrayList<Nodon<T>>();
+        for (Nodon<T> node : nodes) {
             if (node != null) {
                 System.out.print(node.data);
                 newNodes.add(node.left);
@@ -154,7 +260,7 @@ class BTreePrinter {
             System.out.print(" ");
     }
 
-    private static <T extends Comparable<?>> int maxLevel(Node<T> node) {
+    private static <T extends Comparable<?>> int maxLevel(Nodon<T> node) {
         if (node == null)
             return 0;
 
@@ -169,5 +275,5 @@ class BTreePrinter {
 
         return true;
     }
-
+}
 }
