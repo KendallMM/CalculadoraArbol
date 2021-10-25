@@ -2,6 +2,7 @@ package Tree;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Arrays;
@@ -34,7 +35,7 @@ public class Server extends javax.swing.JFrame {
             this.estado.setText("Iniciado");
             new ClientAccept().start();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            
         }
     }
 
@@ -59,7 +60,7 @@ public class Server extends javax.swing.JFrame {
                         new PrepareClientList().start();
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    
                 }
             }
         }
@@ -94,72 +95,23 @@ public class Server extends javax.swing.JFrame {
                     String i = new DataInputStream(s.getInputStream()).readUTF();
                     String monto = i;
                     List<String> calc = Arrays.asList(monto.split(","));
-                    if (calc.get(0).equals("monto")){ //Este if separa una solicitud de monto de un mensaje normal
-                        new ExpressionTree(calc.get(1)).start();
-                        Set k = clientColl.keySet();
-                        Iterator itr = k.iterator();
-                        while (itr.hasNext()) {
-                            String key = (String) itr.next();
-                            if (!key.equalsIgnoreCase(ID)) {
-                                try {
-                                    new DataOutputStream(((Socket) clientColl.get(key)).getOutputStream()).writeUTF(i);
-                                } catch (Exception ex) {
-                                    clientColl.remove(key);
-                                    msgBox.append(key + ": salió!");
-                                    new PrepareClientList().start();
-                                }
-                            }
-                        }
-                        
-                    }
-                    else if (i.equals("mkoihgteazdcvgyhujb096785542AXTY")) {
-                        clientColl.remove(ID);
-                        msgBox.append(ID + ": salió! \n");
+                    i = i.substring(20);
+                    StringTokenizer st = new StringTokenizer(i, ":");
+                    String id = st.nextToken();
+                    i = st.nextToken();
+                    ExpressionTree arbol = new ExpressionTree(i);
+                    String resultado = String.valueOf(arbol.getRes());
+                    Set k = clientColl.keySet();
+                    Iterator itr = k.iterator();
+                    try {
+                        new DataOutputStream(((Socket) clientColl.get(id)).getOutputStream()).writeUTF("Resultado= " + resultado);
+                    } catch (IOException ex) {
+                        clientColl.remove(id);
+                        msgBox.append(id + ": salió!");
                         new PrepareClientList().start();
-                        Set<String> k = clientColl.keySet();
-                        Iterator itr = k.iterator();
-                        while (itr.hasNext()) {
-                            String key = (String) itr.next();
-                            if (!key.equalsIgnoreCase(ID)) {
-                                try {
-                                    new DataOutputStream(((Socket) clientColl.get(key)).getOutputStream()).writeUTF(i);
-                                } catch (Exception ex) {
-                                    clientColl.remove(key);
-                                    msgBox.append(key + ": salió!");
-                                    new PrepareClientList().start();
-                                }
-                            }
-                        }
-                    } else if (i.contains("#4344554@@@@@67667@@")) {
-                        i = i.substring(20);
-                        StringTokenizer st = new StringTokenizer(i, ":");
-                        String id = st.nextToken();
-                        i = st.nextToken();
-                        try {
-                            new DataOutputStream(((Socket) clientColl.get(id)).getOutputStream()).writeUTF("< " + ID + " para tí > " + i);
-                        } catch (Exception ex) {
-                            clientColl.remove(id);
-                            msgBox.append(id + ": salió!");
-                            new PrepareClientList().start();
-                        }
-                    } else {
-                        Set k = clientColl.keySet();
-                        Iterator itr = k.iterator();
-                        while (itr.hasNext()) {
-                            String key = (String) itr.next();
-                            if (!key.equalsIgnoreCase(ID)) {
-                                try {
-                                    new DataOutputStream(((Socket) clientColl.get(key)).getOutputStream()).writeUTF("< " + ID + " para todos > " + i);
-                                } catch (Exception ex) {
-                                    clientColl.remove(key);
-                                    msgBox.append(key + ": salió!");
-                                    new PrepareClientList().start();
-                                }
-                            }
-                        }
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    
                 }
             }
         }
@@ -199,7 +151,7 @@ public class Server extends javax.swing.JFrame {
                     }
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                
             }
         }
     }
@@ -234,12 +186,13 @@ public class Server extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(estado, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(estado, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -249,8 +202,8 @@ public class Server extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(estado))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
