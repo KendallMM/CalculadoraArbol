@@ -45,26 +45,28 @@ public class ExpressionTree extends Thread {
         System.out.println("Lista = " + calc);
         int e = 0;
         while (e < calc.size()) {
-            if (calc.get(e).equals("1") || calc.get(e).equals("2") || calc.get(e).equals("3") || calc.get(e).equals("4") || calc.get(e).equals("5") || calc.get(e).equals("6") || calc.get(e).equals("7") || calc.get(e).equals("8") || calc.get(e).equals("9") || calc.get(e).equals("0")) {
-                String nodo = "";
-                while (calc.get(e).equals("1") || calc.get(e).equals("2") || calc.get(e).equals("3") || calc.get(e).equals("4") || calc.get(e).equals("5") || calc.get(e).equals("6") || calc.get(e).equals("7") || calc.get(e).equals("8") || calc.get(e).equals("9") || calc.get(e).equals("0")) {
-                    nodo += calc.get(e);
-                    System.out.println("El nodo es: " + nodo);
+            switch (calc.get(e)) {
+                case "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" -> {
+                    String nodo = "";
+                    while (calc.get(e).equals("1") || calc.get(e).equals("2") || calc.get(e).equals("3") || calc.get(e).equals("4") || calc.get(e).equals("5") || calc.get(e).equals("6") || calc.get(e).equals("7") || calc.get(e).equals("8") || calc.get(e).equals("9") || calc.get(e).equals("0")) {
+                        nodo += calc.get(e);
+                        System.out.println("El nodo es: " + nodo);
+                        e++;
+                    }       Nodon node = new Nodon(nodo);
+                    stack.push(node);
+                }
+                case " " -> e++;
+                case "(", ")" -> e++;
+                case "+", "-", "*", "/", "%" -> {
+                    Nodon node = new Nodon(calc.get(e));
+                    System.out.println("El nodo es: " + node.data);
+                    node.right = stack.pop();
+                    node.left = stack.pop();
+                    stack.push(node);
                     e++;
                 }
-                Nodon node = new Nodon(nodo);
-                stack.push(node);
-            } else if (calc.get(e).equals(" ")) {
-                e++;
-            } else if (calc.get(e).equals("(") || calc.get(e).equals(")")) {
-                e++;
-            } else if (calc.get(e).equals("+") || calc.get(e).equals("-") || calc.get(e).equals("*") || calc.get(e).equals("/") || calc.get(e).equals("%")) {
-                Nodon node = new Nodon(calc.get(e));
-                System.out.println("El nodo es: " + node.data);
-                node.right = stack.pop();
-                node.left = stack.pop();
-                stack.push(node);
-                e++;
+                default -> {
+                }
             }
         }
         root = stack.pop();

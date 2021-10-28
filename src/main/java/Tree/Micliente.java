@@ -73,6 +73,8 @@ public class Micliente extends javax.swing.JFrame {
                                 dlm.addElement(u);
                             }
                         }
+                    } else if(m.equals("Ya estas registrado!")) {
+                        JOptionPane.showMessageDialog(null, "El usuario ya está registrado", "Error", JOptionPane.INFORMATION_MESSAGE);                
                     } else {
                         msgBox.append("" + m + "\n");
                     }
