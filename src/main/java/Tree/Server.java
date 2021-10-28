@@ -1,7 +1,9 @@
 package Tree;
 
 import Tree.CSV.*;
-
+import static Tree.CSV.EjemploCSV.ExportarCSV;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -86,8 +88,8 @@ public class Server extends javax.swing.JFrame {
          */
         @Override
         public void run() {
-            List<Usuario> usuarios = new ArrayList<Usuario>();
-            java.util.Date fecha = new Date();
+            Date date = new Date();
+            DateFormat fecha = new SimpleDateFormat("dd/MM/yyyy");
             while (!clientColl.isEmpty()) {
                 try {
                     String i = new DataInputStream(s.getInputStream()).readUTF();
@@ -98,8 +100,10 @@ public class Server extends javax.swing.JFrame {
                     ExpressionTree arbol = new ExpressionTree(i);
                     String resultado = String.valueOf(arbol.getRes());
                     try {
+                        List<Usuario> usuarios = new ArrayList<Usuario>();
                         new DataOutputStream(((Socket) clientColl.get(id)).getOutputStream()).writeUTF("Resultado= " + resultado);
-                        usuarios.add(new Usuario(resultado, clientColl.get(id).toString(),fecha.toString()));
+                        usuarios.add(new Usuario(id,i,resultado,fecha.format(date)));
+                        ExportarCSV(usuarios);
                     } catch (IOException ex) {
                         clientColl.remove(id);
                         msgBox.append(id + ": salió!");

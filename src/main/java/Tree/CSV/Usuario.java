@@ -2,7 +2,7 @@
 package Tree.CSV;
 
 /**
- * Método para exportatr el archivp CVS
+ * Mï¿½todo para exportatr el archivp CVS
  * @author Carolina Rodriguez
  * @author Kendall Marin
  */
@@ -10,13 +10,15 @@ package Tree.CSV;
 
 public class Usuario {
     public String nombre;
-    private String telefono;
-    private String email;
+    private String resultado;
+    private String expresion;
+    private String fecha;
 
-    public Usuario(String nombre, String telefono, String email) {
+    public Usuario(String nombre, String expresion, String resultado, String fecha) {
         this.nombre = nombre;
-        this.telefono = telefono;
-        this.email = email;
+        this.expresion = expresion;
+        this.resultado = resultado;
+        this.fecha = fecha;
     }
 
     public String getNombre() {
@@ -27,20 +29,28 @@ public class Usuario {
         this.nombre = nombre;
     }
 
-    public String getTelefono() {
-        return telefono;
+    public String getExpresion() {
+        return expresion;
     }
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
+    public void setExpresion(String expresion) {
+        this.expresion = expresion;
+    }
+    
+    public String getResultado() {
+        return resultado;
     }
 
-    public String getEmail() {
-        return email;
+    public void setResultado(String resultado) {
+        this.resultado = resultado;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
     }
 
 
