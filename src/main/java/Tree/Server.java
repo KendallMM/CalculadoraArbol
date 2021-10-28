@@ -1,14 +1,13 @@
 package Tree;
 
+import Tree.CSV.*;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 /**
@@ -87,6 +86,8 @@ public class Server extends javax.swing.JFrame {
          */
         @Override
         public void run() {
+            List<Usuario> usuarios = new ArrayList<Usuario>();
+            java.util.Date fecha = new Date();
             while (!clientColl.isEmpty()) {
                 try {
                     String i = new DataInputStream(s.getInputStream()).readUTF();
@@ -98,6 +99,7 @@ public class Server extends javax.swing.JFrame {
                     String resultado = String.valueOf(arbol.getRes());
                     try {
                         new DataOutputStream(((Socket) clientColl.get(id)).getOutputStream()).writeUTF("Resultado= " + resultado);
+                        usuarios.add(new Usuario(resultado, clientColl.get(id).toString(),fecha.toString()));
                     } catch (IOException ex) {
                         clientColl.remove(id);
                         msgBox.append(id + ": salió!");

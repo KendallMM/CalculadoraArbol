@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Tree/CSV/CsvReader.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Tree/CSV/CsvWriter.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Tree/CSV/EjemploCSV.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Tree/CSV/Frame_historial.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Tree/CSV/Usuario.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Tree/CSV/Usuarios.csv" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/java/Tree/CSV/javacsv.jar" charset="windows-1252" />
+  </component>
+</project>
