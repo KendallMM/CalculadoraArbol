@@ -6,30 +6,42 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
+/**
+ * Esta clase es para crear un árbol de expresión a partir de una expresión matemática de forma infix
+ * @author Kendall Marín Muñoz
+ * @author Carolina Rodríguez Hall
+ * @version 1.0
+ */
+
 public class ExpressionTree extends Thread {
     private double res;
     static int decider;
     static char checker;
     static Nodon root = null;
-
-    String expressionString;
-
+    public String expressionString;
+    
+    /**
+     * Crea un nuevo árbol de expresión a partir de la expresión infix
+     * @param expressionString la expresión en forma infix
+     */
     ExpressionTree(String expressionString) {
         this.expressionString = expressionString;
     }
-
+    /**
+    * Este método utiza otra clase para convertir la expresión en forma infix a su forma postfix,
+    * luego crea el árbol de expresión a partir de un string array creado del la string postfix
+    */
     public void run() {
-        // pass the infix array in to the postfixer which is a
-        // function to create the postfix form of the expression
+        // Se pasa la expresión infix en forma de stack, por el método infixToPostfix,
+        // el cual se encarga de convertir la expresión a su forma postfix
         StackImpl a = new StackImpl();
         String s1 = a.infixToPostfix(expressionString);
         System.out.println("La expresión infix: " + expressionString);
         System.out.println("La expresión postfix: " + s1);
-        String post = new String(s1);
         System.out.println(s1);
-        // Create tree out of the postfix form
-        Stack<Nodon> stack = new Stack<Nodon>();
-        List<String> calc = Arrays.asList(post.split(""));
+        // Se crea el árbol a partir de la expresión en forma postfix
+        Stack<Nodon> stack = new Stack<>();
+        List<String> calc = Arrays.asList(s1.split(""));
         System.out.println("Lista = " + calc);
         int e = 0;
         while (e < calc.size()) {
@@ -61,57 +73,61 @@ public class ExpressionTree extends Thread {
         System.out.println("rl: " + root.left.data);
         System.out.println("rr: " + root.right.data);
 
-        // Solve the Values!
-        Stack<NodeInt> intStack = new Stack<NodeInt>();
+        // Se resuelven las operaciones a partir del árbol de expresión
+        Stack<NodeInt> intStack = new Stack<>();
         double x;
         double y;
         int i = 0;
         while (i < calc.size()) {
             NodeInt nodeInt = new NodeInt(0);
-            if (calc.get(i).equals("1") || calc.get(i).equals("2") || calc.get(i).equals("3") || calc.get(i).equals("4") || calc.get(i).equals("5") || calc.get(i).equals("6") || calc.get(i).equals("7") || calc.get(i).equals("8") || calc.get(i).equals("9") || calc.get(i).equals("0")) {
-                String nodo = "";
-                while (calc.get(i).equals("1") || calc.get(i).equals("2") || calc.get(i).equals("3") || calc.get(i).equals("4") || calc.get(i).equals("5") || calc.get(i).equals("6") || calc.get(i).equals("7") || calc.get(i).equals("8") || calc.get(i).equals("9") || calc.get(i).equals("0")) {
-                    nodo += calc.get(i);
+            switch (calc.get(i)) {
+                case "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" -> {
+                    String nodo = "";
+                    while (calc.get(i).equals("1") || calc.get(i).equals("2") || calc.get(i).equals("3") || calc.get(i).equals("4") || calc.get(i).equals("5") || calc.get(i).equals("6") || calc.get(i).equals("7") || calc.get(i).equals("8") || calc.get(i).equals("9") || calc.get(i).equals("0")) {
+                        nodo += calc.get(i);
+                        i++;
+                    }   nodeInt = new NodeInt(Integer.parseInt(nodo));
+                    intStack.push(nodeInt);
+                }
+                case "(", ")" -> i++;
+                case "+" -> {
+                    x = intStack.pop().data;
+                    y = intStack.pop().data;
+                    nodeInt.data = y + x;
+                    intStack.push(nodeInt);
                     i++;
                 }
-                nodeInt = new NodeInt(Integer.parseInt(nodo));
-                intStack.push(nodeInt);
-            } else if (calc.get(i).equals("(") || calc.get(i).equals(")")) {
-                i++;
-
-            } else if (calc.get(i).equals("+")) {
-                x = intStack.pop().data;
-                y = intStack.pop().data;
-                nodeInt.data = y + x;
-                intStack.push(nodeInt);
-                i++;
-            } else if (calc.get(i).equals("-")) {
-                x = intStack.pop().data;
-                y = intStack.pop().data;
-                nodeInt.data = y - x;
-                intStack.push(nodeInt);
-                i++;
-            } else if (calc.get(i).equals("/")) {
-                x = intStack.pop().data;
-                y = intStack.pop().data;
-                nodeInt.data = y / x;
-                intStack.push(nodeInt);
-                i++;
-            } else if (calc.get(i).equals("*")) {
-                x = intStack.pop().data;
-                y = intStack.pop().data;
-
-                nodeInt.data = y * x;
-                intStack.push(nodeInt);
-                i++;
-            } else if (calc.get(i).equals("%")) {
-                x = intStack.pop().data;
-                y = intStack.pop().data;
-                nodeInt.data = (y / 100) * x;
-                intStack.push(nodeInt);
-                i++;
-            } else if (calc.get(i).equals(" ")) {
-                i++;
+                case "-" -> {
+                    x = intStack.pop().data;
+                    y = intStack.pop().data;
+                    nodeInt.data = y - x;
+                    intStack.push(nodeInt);
+                    i++;
+                }
+                case "/" -> {
+                    x = intStack.pop().data;
+                    y = intStack.pop().data;
+                    nodeInt.data = y / x;
+                    intStack.push(nodeInt);
+                    i++;
+                }
+                case "*" -> {
+                    x = intStack.pop().data;
+                    y = intStack.pop().data;
+                    nodeInt.data = y * x;
+                    intStack.push(nodeInt);
+                    i++;
+                }
+                case "%" -> {
+                    x = intStack.pop().data;
+                    y = intStack.pop().data;
+                    nodeInt.data = (y / 100) * x;
+                    intStack.push(nodeInt);
+                    i++;
+                }
+                case " " -> i++;
+                default -> {
+                }
             }
         }
         this.res = intStack.pop().data;
@@ -127,7 +143,7 @@ public class ExpressionTree extends Thread {
 
         switch (a) {
 
-            case '/':
+            case '/' -> {
                 switch (b) {
                     case '/':
                         decider = 0;
@@ -143,8 +159,8 @@ public class ExpressionTree extends Thread {
                         break;
                     default:
                 }
-                break;
-            case '%':
+            }
+            case '%' -> {
                 switch (b) {
                     case '/':
                         decider = 0;
@@ -160,8 +176,8 @@ public class ExpressionTree extends Thread {
                         break;
                     default:
                 }
-                break;
-            case '*':
+            }
+            case '*' -> {
                 switch (b) {
                     case '/':
                         decider = 0;
@@ -177,25 +193,8 @@ public class ExpressionTree extends Thread {
                         break;
                     default:
                 }
-                break;
-            case '+':
-                switch (b) {
-                    case '/':
-                        decider = 2;
-                        break;
-                    case '*':
-                        decider = 2;
-                        break;
-                    case '+':
-                        decider = 0;
-                        break;
-                    case '-':
-                        decider = 0;
-                        break;
-                    default:
-                }
-                break;
-            case '-':
+            }
+            case '+' -> {
                 switch (b) {
                     case '/':
                         decider = 2;
@@ -211,8 +210,26 @@ public class ExpressionTree extends Thread {
                         break;
                     default:
                 }
-                break;
-            default:
+            }
+            case '-' -> {
+                switch (b) {
+                    case '/':
+                        decider = 2;
+                        break;
+                    case '*':
+                        decider = 2;
+                        break;
+                    case '+':
+                        decider = 0;
+                        break;
+                    case '-':
+                        decider = 0;
+                        break;
+                    default:
+                }
+            }
+            default -> {
+            }
         }
     }
 
@@ -267,8 +284,8 @@ public class ExpressionTree extends Thread {
 
             BTreePrinter.printWhitespaces(firstSpaces);
 
-            List<Nodon<T>> newNodes = new ArrayList<Nodon<T>>();
-            for (Nodon<T> node : nodes) {
+            List<Nodon<T>> newNodes = new ArrayList<>();
+            nodes.stream().map(node -> {
                 if (node != null) {
                     System.out.print(node.data);
                     newNodes.add(node.left);
@@ -278,9 +295,10 @@ public class ExpressionTree extends Thread {
                     newNodes.add(null);
                     System.out.print(" ");
                 }
-
+                return node;
+            }).forEachOrdered(_item -> {
                 BTreePrinter.printWhitespaces(betweenSpaces);
-            }
+            });
             System.out.println("");
 
             for (int i = 1; i <= endgeLines; i++) {
@@ -329,13 +347,7 @@ public class ExpressionTree extends Thread {
         }
 
         private static <T> boolean isAllElementsNull(List<T> list) {
-            for (Object object : list) {
-                if (object != null) {
-                    return false;
-                }
-            }
-
-            return true;
+            return list.stream().noneMatch(object -> (object != null));
         }
     }
 }

@@ -1,9 +1,10 @@
 package Tree;
 
-
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import javax.swing.JOptionPane;
 
@@ -11,6 +12,8 @@ import javax.swing.JOptionPane;
  * Esta clase es para registrar al cliente con una interfaz gráfica simple
  *
  * @author Kendall Marín Muñoz
+ * @author Carolina Rodríguez Hall
+ * @version 1.0
  */
 public class ClientRegister extends javax.swing.JFrame {
     /**
@@ -124,7 +127,6 @@ public class ClientRegister extends javax.swing.JFrame {
         try {
             String id = name.getText();
             Socket s = new Socket("localhost", 8080);
-            DataInputStream din = new DataInputStream(s.getInputStream());
             DataOutputStream dout = new DataOutputStream(s.getOutputStream());
             dout.writeUTF(id);
             String i = new DataInputStream(s.getInputStream()).readUTF();
@@ -135,7 +137,7 @@ public class ClientRegister extends javax.swing.JFrame {
                 this.dispose();
             }
 
-        } catch (Exception ex) {
+        } catch (HeadlessException | IOException ex) {
             
         }
     }//GEN-LAST:event_connect
@@ -170,10 +172,8 @@ public class ClientRegister extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Crea y proyecta la interfaz */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ClientRegister().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new ClientRegister().setVisible(true);
         });
     }
 

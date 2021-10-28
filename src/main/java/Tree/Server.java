@@ -5,22 +5,17 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 import java.util.StringTokenizer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 
 /**
  * Esta clase es para crear un servidor con interfaz gráfica simple
- *
  * @author Kendall Marín Muñoz
+ * @author Carolina Rodríguez Hall
+ * @version 1.0
  */
 public class Server extends javax.swing.JFrame {
     ServerSocket ss;
@@ -34,7 +29,7 @@ public class Server extends javax.swing.JFrame {
             ss = new ServerSocket(8080);
             this.estado.setText("Iniciado");
             new ClientAccept().start();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             
         }
     }
@@ -43,6 +38,7 @@ public class Server extends javax.swing.JFrame {
      * Esta clase es para aceptar a diferentes clientes
      */
     class ClientAccept extends Thread {
+        @Override
         public void run() {
             while (true) {
                 try {
@@ -59,7 +55,7 @@ public class Server extends javax.swing.JFrame {
                         new MsgRead(s, i).start();
                         new PrepareClientList().start();
                     }
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     
                 }
             }
@@ -89,20 +85,17 @@ public class Server extends javax.swing.JFrame {
          * Este método se encarga de recibir los paquetes de datos (mensajes)
          * y los envía a los clientes correspondientes
          */
+        @Override
         public void run() {
             while (!clientColl.isEmpty()) {
                 try {
                     String i = new DataInputStream(s.getInputStream()).readUTF();
-                    String monto = i;
-                    List<String> calc = Arrays.asList(monto.split(","));
                     i = i.substring(20);
                     StringTokenizer st = new StringTokenizer(i, ":");
                     String id = st.nextToken();
                     i = st.nextToken();
                     ExpressionTree arbol = new ExpressionTree(i);
                     String resultado = String.valueOf(arbol.getRes());
-                    Set k = clientColl.keySet();
-                    Iterator itr = k.iterator();
                     try {
                         new DataOutputStream(((Socket) clientColl.get(id)).getOutputStream()).writeUTF("Resultado= " + resultado);
                     } catch (IOException ex) {
@@ -110,7 +103,7 @@ public class Server extends javax.swing.JFrame {
                         msgBox.append(id + ": salió!");
                         new PrepareClientList().start();
                     }
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     
                 }
             }
@@ -128,6 +121,7 @@ public class Server extends javax.swing.JFrame {
          * Este método se encarga de añadir los clientes conectados a una lista
          * proyectada en la interfaz de los clientes
          */
+        @Override
         public void run() {
             try {
                 String ids = "";
@@ -145,7 +139,7 @@ public class Server extends javax.swing.JFrame {
                     String key = (String) itr.next();
                     try {
                         new DataOutputStream(((Socket) clientColl.get(key)).getOutputStream()).writeUTF(":;.,/=" + ids);
-                    } catch (Exception ex) {
+                    } catch (IOException ex) {
                         clientColl.remove(key);
                         msgBox.append(key + ": salió!");
                     }
@@ -248,10 +242,8 @@ public class Server extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Crea y proyecta la interfaz */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Server().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Server().setVisible(true);
         });
     }
 

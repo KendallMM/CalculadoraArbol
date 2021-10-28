@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Tree;
 
 import java.util.Stack;
@@ -10,7 +5,7 @@ import java.util.Stack;
 class StackImpl {
   
   public String infixToPostfix(String s) {
-    Stack<Character> st = new Stack<Character>();
+    Stack<Character> st = new Stack<>();
     String postfix = "";
     char ch[] = s.toCharArray();
     

@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.List;
 import java.util.StringTokenizer;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -32,7 +30,7 @@ public class Micliente extends javax.swing.JFrame {
     }
 
     /**
-     * Este método asigna el usuario y el socket al cliente
+     * Asigna el usuario y el socket al cliente
      *
      * @param i el nombre del usuario en el cliente
      * @param s el socket que utiliza el cliente
@@ -46,7 +44,7 @@ public class Micliente extends javax.swing.JFrame {
             din = new DataInputStream(s.getInputStream());
             dout = new DataOutputStream(s.getOutputStream());
             new Read().start();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             
         }
 
@@ -60,12 +58,11 @@ public class Micliente extends javax.swing.JFrame {
          * Este método envía los mensajes y detecta si se solicitó un monto,
          * respondiendo automáticamente el resultado del cálculo del monto
          */
+        @Override
         public void run() {
             while (true) {
                 try {
                     String m = din.readUTF();
-                    String monto = m;
-                    List<String> calc = Arrays.asList(monto.split(":"));
                     if (m.contains(":;.,/=")) {
                         m = m.substring(6);
                         dlm.clear();
@@ -79,7 +76,7 @@ public class Micliente extends javax.swing.JFrame {
                     } else {
                         msgBox.append("" + m + "\n");
                     }
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     break;
                 }
             }
@@ -418,7 +415,7 @@ public class Micliente extends javax.swing.JFrame {
                 dout.writeUTF(m);
                 msgText.setText("");
                 msgBox.append("Expresión: "+ mm + "\n");
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "El usuario ya no está.");
         }
     }//GEN-LAST:event_btnIgual
